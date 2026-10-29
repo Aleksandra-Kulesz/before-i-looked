@@ -19,6 +19,8 @@ export type Night = {
   rows: DigestRow[];
   // Lines that did not parse. Counted, never thrown.
   badLines: number;
+  // Log lines per status, for the status board.
+  counts: Record<JobStatus, number>;
 };
 
 // Reads runs/<night>.jsonl. Returns null when the night has no file (the page answers 404).

@@ -35,6 +35,7 @@ export const readNight: ReadNight = (runsDir, night): Night | null => {
 
   const rows = new Map<string, DigestRow>();
   let badLines = 0;
+  const counts: Record<JobStatus, number> = { ok: 0, retry: 0, fail: 0 };
   for (const text of readFileSync(path, 'utf8').split('\n')) {
     if (text.trim() === '') continue;
     const line = parseLine(text);
@@ -42,6 +43,7 @@ export const readNight: ReadNight = (runsDir, night): Night | null => {
       badLines++;
       continue;
     }
+    counts[line.status]++;
     const row = rows.get(line.job);
     if (!row) {
       rows.set(line.job, {
@@ -63,5 +65,5 @@ export const readNight: ReadNight = (runsDir, night): Night | null => {
     if (line.error) row.lastError = line.error;
     row.lastAt = line.at;
   }
-  return { night, rows: [...rows.values()].sort((a, b) => a.job.localeCompare(b.job)), badLines };
+  return { night, rows: [...rows.values()].sort((a, b) => a.job.localeCompare(b.job)), badLines, counts };
 };
